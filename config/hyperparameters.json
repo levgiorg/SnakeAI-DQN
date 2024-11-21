@@ -1,0 +1,18 @@
+{
+    "training": {
+        "num_episodes": 10
+    },
+    "general": {
+        "seed": 42
+    },
+    "agent": {
+        "gamma": 0.9,
+        "epsilon_start": 1.0,
+        "epsilon_min": 0.01,
+        "epsilon_decay": 0.995,
+        "memory_size": 100000,
+        "batch_size": 1000,
+        "learning_rate": 0.0005,
+        "hidden_size": 256
+    }
+}

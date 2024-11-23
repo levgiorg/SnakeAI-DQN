@@ -4,11 +4,11 @@ import random
 from datetime import datetime
 import numpy as np
 
-from agents.dqn_agent import DQNAgent
-from env.snake_environment import SnakeEnvironment
-from config.hyperparameters import Config
-from utils.plotter import Plotter
-from utils.logger import Logger
+from agents import DQNAgent
+from environment import SnakeEnvironment
+from config import Config
+from utilities import Plotter, Logger
+
 
 def main():
     # Load configuration
@@ -31,11 +31,11 @@ def main():
 
     # Set up directories
     run_number = 1
-    base_save_dir = 'saved_models'
+    base_save_dir = 'runs'
     while os.path.exists(os.path.join(base_save_dir, f'run_{run_number}')):
         run_number += 1
     run_dir = os.path.join(base_save_dir, f'run_{run_number}')
-    os.makedirs(run_dir)
+    os.makedirs(run_dir, exist_ok=True)  # Use exist_ok=True to avoid race conditions
 
     # Save hyperparameters.json to run directory
     config.save(os.path.join(run_dir, 'hyperparameters.json'))
@@ -80,11 +80,14 @@ def main():
             best_score = current_score
             agent.save_model(os.path.join(run_dir, 'model.pth'))
 
-        # Update plots and logs
-        plotter.plot(current_score, episode)
+        # Update scores and logs
+        plotter.add_score(current_score)  # Collect score data
         logger.log(episode, current_score, best_score)
 
         print(f'Episode: {episode}, Score: {current_score}, Record: {best_score}')
+
+    # Save the training plot after all episodes are completed
+    plotter.save_plot()
 
     game_env.close()
 

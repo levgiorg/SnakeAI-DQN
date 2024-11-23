@@ -1,57 +1,32 @@
 import pygame
 import random
-from enum import Enum
-from collections import namedtuple
 import numpy as np
 import sys
 import gym
 from gym import spaces
 
-pygame.init()
-font = pygame.font.SysFont('arial', 25)
+from config import Config
+from .direction import Direction
+from .point import Point
 
-# Constants
-BLOCK_SIZE = 20
-SPEED = 40
-
-# Colors
-WHITE = (255, 255, 255)
-RED = (200, 0, 0)
-GREEN1 = (0, 255, 0)
-GREEN2 = (0, 150, 0)
-BLACK = (0, 0, 0)
-
-# Direction Enum
-class Direction(Enum):
-    RIGHT = 1
-    LEFT = 2
-    UP = 3
-    DOWN = 4
-
-# Point class
-class Point:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    # Implement equality for easy comparison
-    def __eq__(self, other):
-        return self.x == other.x and self.y == other.y
-
-    # For printing the point
-    def __repr__(self):
-        return f'Point({self.x}, {self.y})'
 
 class SnakeEnvironment(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self, width=640, height=480, seed=None):
         super(SnakeEnvironment, self).__init__()
-        self.width = width
-        self.height = height
+        pygame.init()
+        config = Config()
 
-        # Initialize block size
-        self.block_size = BLOCK_SIZE  # Added this line
+        env_config = config.get_section('environment')
+        self.width = env_config.get('width')
+        self.height = env_config.get('height')
+        self.block_size = env_config.get('block_size',)
+        self.speed = env_config.get('speed')
+        self.colors = env_config.get('colors') 
+
+        font_config = env_config.get('font')
+        self.font = pygame.font.SysFont(font_config['name'], font_config['size'])
 
         # Set seed for environment randomness
         self.seed = seed
@@ -217,18 +192,18 @@ class SnakeEnvironment(gym.Env):
             self.display = pygame.display.set_mode((self.width, self.height))
             pygame.display.set_caption('Snake')
 
-        self.display.fill(BLACK)
+        self.display.fill(self.colors['black'])
 
         for part in self.snake:
-            pygame.draw.rect(self.display, GREEN1, pygame.Rect(part.x, part.y, self.block_size, self.block_size))
-            pygame.draw.rect(self.display, GREEN2, pygame.Rect(part.x + 4, part.y + 4, 12, 12))
+            pygame.draw.rect(self.display, self.colors['green1'], pygame.Rect(part.x, part.y, self.block_size, self.block_size))
+            pygame.draw.rect(self.display, self.colors['green2'], pygame.Rect(part.x + 4, part.y + 4, 12, 12))
 
-        pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, self.block_size, self.block_size))
+        pygame.draw.rect(self.display, self.colors['red'], pygame.Rect(self.food.x, self.food.y, self.block_size, self.block_size))
 
-        text = font.render("Score: " + str(self.score), True, WHITE)
+        text = self.font.render("Score: " + str(self.score), True, self.colors['white'])
         self.display.blit(text, [0, 0])
         pygame.display.flip()
-        self.clock.tick(SPEED)
+        self.clock.tick(self.speed)
 
     def close(self):
         if self.display is not None:

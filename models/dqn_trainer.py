@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-class QTrainer:
+class DQNTrainer:
     def __init__(self, model, lr, gamma):
         self.model = model
         self.gamma = gamma

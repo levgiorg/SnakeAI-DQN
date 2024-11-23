@@ -3,9 +3,8 @@ import random
 import numpy as np
 from collections import deque
 
-from models.neural_net import NeuralNetwork
-from models.q_trainer import QTrainer
-from utils.replay_memory import ReplayMemory
+from models import NeuralNetwork, DQNTrainer
+from utilities import ReplayMemory
 
 class DQNAgent:
     def __init__(self, environment, config, save_dir):
@@ -26,7 +25,7 @@ class DQNAgent:
         hidden_size = config.get('agent', 'hidden_size')
         output_size = environment.action_space.n
         self.model = NeuralNetwork(input_size, hidden_size, output_size)
-        self.trainer = QTrainer(self.model, lr=config.get('agent', 'learning_rate'), gamma=self.gamma)
+        self.trainer = DQNTrainer(self.model, lr=config.get('agent', 'learning_rate'), gamma=self.gamma)
 
     def get_action(self, state):
         final_move = [0, 0, 0]
@@ -50,7 +49,7 @@ class DQNAgent:
             state0 = torch.tensor(state, dtype=torch.float32).unsqueeze(0).to(self.trainer.device)
             prediction = self.model(state0)
             move = torch.argmax(prediction).item()
-            print(f"Predicted action selected: {move}")
+            #print(f"Predicted action selected: {move}")
         
         final_move[move] = 1
         return move

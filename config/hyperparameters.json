@@ -1,6 +1,6 @@
 {
     "training": {
-        "num_episodes": 10
+        "num_episodes": 10000
     },
     "general": {
         "seed": 42
@@ -14,5 +14,22 @@
         "batch_size": 1000,
         "learning_rate": 0.0005,
         "hidden_size": 256
+    },
+    "environment": {
+        "width": 640,
+        "height": 480,
+        "block_size": 20,
+        "speed": 40,
+        "colors": {
+            "white": [255, 255, 255],
+            "red": [200, 0, 0],
+            "green1": [0, 255, 0],
+            "green2": [0, 150, 0],
+            "black": [0, 0, 0]
+        },
+        "font": {
+            "name": "arial",
+            "size": 25
+        }
     }
 }

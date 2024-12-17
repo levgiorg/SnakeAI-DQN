@@ -18,7 +18,8 @@ class Config:
             with open(Config.config_file_path, 'r') as f:
                 Config.config = json.load(f)
 
-    def get(self, section, key=None, default=None):
+    @staticmethod
+    def get(section, key=None, default=None):
         """Retrieve a specific value from the configuration."""
         if key is None:
             # Assume 'section' is actually the top-level key
@@ -26,7 +27,8 @@ class Config:
         else:
             return Config.config.get(section, {}).get(key, default)
 
-    def get_section(self, section):
+    @staticmethod
+    def get_section(section):
         """Retrieve an entire section from the configuration."""
         return Config.config.get(section, {})
 
@@ -34,7 +36,8 @@ class Config:
         # Existing code remains unchanged
         pass
 
-    def save(self, path):
+    @staticmethod
+    def save(path):
         """Save the current configuration to a file."""
         with open(path, 'w') as f:
             json.dump(Config.config, f, indent=4)

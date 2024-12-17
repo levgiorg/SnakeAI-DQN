@@ -224,7 +224,8 @@ class SnakeEnvironment(gym.Env):
             y -= self.block_size
         return Point(x, y)
 
-    def _rotate_direction(self, current_direction, turn):
+    @staticmethod
+    def _rotate_direction(current_direction, turn):
         directions = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
         idx = directions.index(current_direction)
         idx = (idx + turn) % len(directions)
